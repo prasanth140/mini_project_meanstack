@@ -55,3 +55,4 @@ node seed.js
 - `backend/`: Node/Express server, models, controllers, and socket logic.
 - `frontend/`: Angular application with services, guards, and premium UI components.
 "# mini_project_meanstack" 
+"# mini_project_meanstack" 
