@@ -1,0 +1,122 @@
+<div class="workflows-container animate-fade-in">
+  <header class="section-header">
+    <div class="title-group">
+      <h1>Service Orchestration</h1>
+      <p>Chain multiple microservices into automated workflows</p>
+    </div>
+    <div class="premium-badge"><i class="ri-vip-diamond-line"></i> Premium Feature</div>
+  </header>
+
+  <div class="workflow-dashboard">
+    <!-- Workflow List -->
+    <div class="workflow-list glass-morphism">
+      <div class="list-header">
+        <h3>My Workflows</h3>
+        <button class="add-btn" (click)="showCreateModal = true"><i class="ri-add-circle-fill"></i></button>
+      </div>
+      <div class="items">
+        <div *ngFor="let wf of workflows" 
+             class="wf-item" 
+             [class.active]="selectedWorkflow?._id === wf._id"
+             (click)="selectWorkflow(wf)">
+          <div class="wf-info">
+            <h4>{{ wf.name }}</h4>
+            <span>{{ wf.steps.length }} Steps • {{ wf.active ? 'Status: Active' : 'Status: Paused' }}</span>
+          </div>
+          <div class="wf-status" [class.success]="wf.active"></div>
+        </div>
+        <div *ngIf="workflows.length === 0" class="empty-list">
+           No workflows created yet.
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Builder / Execution Canvas -->
+    <div class="workflow-canvas glass-morphism">
+      <div *ngIf="!selectedWorkflow && !showCreateModal" class="canvas-empty-state">
+        <i class="ri-node-tree"></i>
+        <p>Select a workflow to view details or execute</p>
+      </div>
+
+      <div *ngIf="selectedWorkflow && !showCreateModal" class="active-canvas">
+        <div class="canvas-header">
+          <h3>Workflow: <span>{{ selectedWorkflow.name }}</span></h3>
+          <div class="canvas-actions">
+            <button class="btn-premium" (click)="runWorkflow()" [disabled]="executing">
+              {{ executing ? 'Executing...' : 'Execute Flow' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="builder-view">
+          <div class="node-sequence">
+            <div *ngFor="let step of selectedWorkflow.steps; let i = index" class="step-wrapper">
+              <div class="node glass-morphism animate-fade-in">
+                <span class="step-num">{{ i + 1 }}</span>
+                <div class="node-icon">
+                   <i class="ri-server-line"></i>
+                </div>
+                <div class="node-content">
+                  <h5>{{ step.name }}</h5>
+                  <p>{{ step.serviceId.endpoint }}</p>
+                </div>
+              </div>
+              <div *ngIf="i < selectedWorkflow.steps.length - 1" class="connector">
+                <i class="ri-arrow-down-line"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Execution Results -->
+        <div *ngIf="executionResults" class="execution-summary animate-fade-in">
+          <h4>Execution Summary</h4>
+          <div class="results-grid">
+             <div *ngFor="let res of executionResults.summary" class="res-item" [class.success]="res.status === 'success'">
+                <i [class]="res.status === 'success' ? 'ri-checkbox-circle-fill' : 'ri-error-warning-fill'"></i>
+                <span>{{ res.step }}</span>
+                <strong *ngIf="res.status_code">({{ res.status_code }})</strong>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Workflow Form -->
+      <div *ngIf="showCreateModal" class="create-workflow-view animate-fade-in">
+        <div class="canvas-header">
+          <h3>Create New Workflow</h3>
+          <button class="close-btn" (click)="showCreateModal = false">&times;</button>
+        </div>
+
+        <form (ngSubmit)="saveWorkflow()" class="wf-form">
+          <div class="form-group">
+            <label>Workflow Name</label>
+            <input type="text" [(ngModel)]="newWorkflow.name" name="name" class="input-premium" required>
+          </div>
+          
+          <div class="steps-config">
+            <label>Workflow Steps</label>
+            <div *ngFor="let step of newWorkflow.steps; let i = index" class="config-step-item glass-morphism">
+               <div class="step-head">
+                 <span>Step {{ i + 1 }}</span>
+                 <button type="button" class="remove-step" (click)="removeStep(i)">&times;</button>
+               </div>
+               <div class="form-row">
+                 <input type="text" [(ngModel)]="step.name" [name]="'stepName' + i" class="input-premium" placeholder="Step Name" required>
+                 <select [(ngModel)]="step.serviceId" [name]="'stepService' + i" class="input-premium" required>
+                    <option *ngFor="let s of availableServices" [value]="s._id">{{ s.name }}</option>
+                 </select>
+               </div>
+            </div>
+            <button type="button" class="add-step-btn" (click)="addStep()">+ Add Step</button>
+          </div>
+
+          <div class="form-actions mt-4">
+            <button type="button" class="btn-cancel" (click)="showCreateModal = false">Cancel</button>
+            <button type="submit" class="btn-premium">Save Workflow</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

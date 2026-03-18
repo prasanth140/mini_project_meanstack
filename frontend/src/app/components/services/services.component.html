@@ -1,0 +1,118 @@
+<div class="services-container animate-fade-in">
+  <header class="section-header">
+    <div class="title-group">
+      <h1>API Service Management</h1>
+      <p>Configure and manage your microservice endpoints</p>
+    </div>
+    <button class="btn-premium" (click)="toggleModal(true)">
+      <i class="ri-add-line"></i> Register Service
+    </button>
+  </header>
+
+  <div class="services-grid">
+    <div *ngFor="let service of services" class="service-card glass-morphism animate-fade-in">
+      <div class="card-top">
+        <span class="env-badge" [ngClass]="service.environment">{{ service.environment }}</span>
+        <div class="card-actions">
+          <button class="icon-btn danger" (click)="deleteService(service._id)"><i class="ri-delete-bin-line"></i></button>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="service-icon">
+          <i class="ri-server-line"></i>
+        </div>
+        <h3 class="card-title">{{ service.name }}</h3>
+        <p class="service-desc">{{ service.description }}</p>
+        
+        <div class="meta-info">
+          <div class="meta-item">
+            <span class="label">Method</span>
+            <span class="value" [ngClass]="service.method">{{ service.method }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Category</span>
+            <span class="value">{{ service.category }}</span>
+          </div>
+        </div>
+        
+        <div class="endpoint-box">
+          <code>{{ service.endpoint }}</code>
+          <button class="copy-btn"><i class="ri-file-copy-line"></i></button>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-test" [routerLink]="['/testing']" [queryParams]="{ serviceId: service._id }">
+          <i class="ri-play-line"></i> Run Test
+        </button>
+      </div>
+    </div>
+    
+    <div *ngIf="services.length === 0" class="empty-placeholder glass-morphism">
+      <i class="ri-inbox-line"></i>
+      <p>No services registered yet. Add your first API endpoint.</p>
+    </div>
+  </div>
+
+  <!-- Modal for Adding Service -->
+  <div *ngIf="showModal" class="modal-overlay animate-fade-in">
+    <div class="modal-content glass-morphism animate-zoom-in">
+      <div class="modal-header">
+        <h2>Register New Service</h2>
+        <button class="close-btn" (click)="toggleModal(false)">&times;</button>
+      </div>
+      
+      <form (ngSubmit)="saveService()" class="service-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Service Name</label>
+            <input type="text" [(ngModel)]="newService.name" name="name" class="input-premium" required placeholder="e.g. Auth Gateway">
+          </div>
+          <div class="form-group">
+            <label>Environment</label>
+            <select [(ngModel)]="newService.environment" name="environment" class="input-premium">
+              <option value="dev">Development</option>
+              <option value="staging">Staging</option>
+              <option value="production">Production</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Endpoint URL</label>
+          <input type="text" [(ngModel)]="newService.endpoint" name="endpoint" class="input-premium" required placeholder="https://api.example.com/v1">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Request Method</label>
+            <select [(ngModel)]="newService.method" name="method" class="input-premium">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select [(ngModel)]="newService.category" name="category" class="input-premium">
+              <option value="internal">Internal</option>
+              <option value="external">External</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="newService.description" name="description" class="input-premium" rows="3" placeholder="Brief explanation of this service..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" (click)="toggleModal(false)">Cancel</button>
+          <button type="submit" class="btn-premium">Register Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

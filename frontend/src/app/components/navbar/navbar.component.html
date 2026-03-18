@@ -1,0 +1,41 @@
+<nav class="sidebar glass-morphism">
+  <div class="logo-section">
+    <h1 class="logo-text">S<span>H</span></h1>
+  </div>
+
+  <div class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" title="Dashboard">
+      <i class="ri-dashboard-line"></i>
+      <span class="label">Overview</span>
+    </a>
+    <a routerLink="/services" routerLinkActive="active" class="nav-item" title="Services">
+      <i class="ri-server-line"></i>
+      <span class="label">APIs</span>
+    </a>
+    <a routerLink="/testing" routerLinkActive="active" class="nav-item" title="Testing Console">
+      <i class="ri-terminal-box-line"></i>
+      <span class="label">Console</span>
+    </a>
+    <a routerLink="/logs" routerLinkActive="active" class="nav-item" title="Logs">
+      <i class="ri-file-list-3-line"></i>
+      <span class="label">Trace Logs</span>
+    </a>
+    <a routerLink="/workflows" routerLinkActive="active" class="nav-item" title="Workflows">
+      <i class="ri-node-tree"></i>
+      <span class="label">Workflows</span>
+    </a>
+  </div>
+
+  <div class="profile-section">
+    <div class="user-avatar">
+      {{ currentUser?.name?.charAt(0) || 'U' }}
+    </div>
+    <div class="user-info">
+      <p class="user-name">{{ currentUser?.name }}</p>
+      <p class="user-role">{{ currentUser?.role }}</p>
+    </div>
+    <button (click)="logout()" class="logout-btn" title="Logout">
+      <i class="ri-logout-box-r-line"></i>
+    </button>
+  </div>
+</nav>

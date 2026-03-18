@@ -1,0 +1,83 @@
+<div class="logs-container animate-fade-in">
+  <header class="section-header">
+    <div class="title-group">
+      <h1>API Trace Logs</h1>
+      <p>Historical audit trail of all service interactions</p>
+    </div>
+    <div class="filter-group">
+      <input type="text" [(ngModel)]="filterQuery" class="input-premium search-logs" placeholder="Filter by endpoint or status...">
+      <button class="btn-premium export-btn" (click)="exportToCSV()">
+        <i class="ri-download-2-line"></i> Export CSV
+      </button>
+    </div>
+  </header>
+
+  <div class="logs-table-container glass-morphism">
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Endpoint</th>
+          <th>Status</th>
+          <th>Latency</th>
+          <th>Timestamp</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of filteredLogs" class="log-row">
+          <td><span class="method-tag" [ngClass]="log.method">{{ log.method }}</span></td>
+          <td class="endpoint-cell" [title]="log.endpoint">{{ log.endpoint }}</td>
+          <td>
+            <span class="status-badge" [class.success]="log.status < 400" [class.error]="log.status >= 400">
+              {{ log.status }}
+            </span>
+          </td>
+          <td>{{ log.responseTime }}ms</td>
+          <td class="time-cell">{{ log.timestamp | date:'MMM d, HH:mm:ss' }}</td>
+          <td>
+            <button class="view-btn" (click)="selectLog(log)">Details</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredLogs.length === 0">
+          <td colspan="6" class="empty-row">No logs matching your filter found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Detail Sidebar/Overlay -->
+  <div *ngIf="selectedLog" class="detail-overlay animate-fade-in" (click)="selectedLog = null">
+    <div class="detail-panel glass-morphism" (click)="$event.stopPropagation()">
+      <div class="detail-header">
+        <h2>Request Details</h2>
+        <button class="close-btn" (click)="selectedLog = null">&times;</button>
+      </div>
+      
+      <div class="detail-content">
+        <section>
+          <h4>Request Info</h4>
+          <div class="detail-grid">
+            <div class="item"><span>Method:</span> <strong>{{ selectedLog.method }}</strong></div>
+            <div class="item"><span>Status:</span> <strong [class.text-success]="selectedLog.status < 400" [class.text-error]="selectedLog.status >= 400">{{ selectedLog.status }}</strong></div>
+            <div class="item full"><span>URL:</span> <code>{{ selectedLog.endpoint }}</code></div>
+          </div>
+        </section>
+
+        <section>
+          <h4>Response Data</h4>
+          <div class="json-box">
+            <pre><code>{{ selectedLog.responseData | json }}</code></pre>
+          </div>
+        </section>
+
+        <section *ngIf="selectedLog.error">
+          <h4 class="text-error">Error Trace</h4>
+          <div class="error-box">
+            {{ selectedLog.error }}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="login-container">
+  <!-- Dynamic Background Glow -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="login-card glass-morphism animate-fade-in">
+    <div class="logo-section">
+      <h1 class="logo-text">Service<span>Hub</span></h1>
+      <p class="subtitle">Centralized Microservices Management</p>
+    </div>
+
+    <!-- Toggle Between Login and Register -->
+    <div class="auth-tabs">
+      <button [class.active]="!isRegister" (click)="toggleMode(false)">Sign In</button>
+      <button [class.active]="isRegister" (click)="toggleMode(true)">Create Account</button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #authForm="ngForm" class="login-form">
+      <div class="form-group" *ngIf="isRegister">
+        <label>Full Name</label>
+        <div class="input-wrapper">
+          <i class="ri-user-line"></i>
+          <input type="text" name="name" [(ngModel)]="name" class="input-premium" placeholder="John Doe" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <i class="ri-mail-line"></i>
+          <input type="email" name="email" [(ngModel)]="email" class="input-premium" placeholder="name@company.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="ri-lock-line"></i>
+          <input type="password" name="password" [(ngModel)]="password" class="input-premium" placeholder="••••••••" required>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="isRegister">
+        <label>Role</label>
+        <div class="input-wrapper">
+          <i class="ri-shield-user-line"></i>
+          <select name="role" [(ngModel)]="role" class="input-premium">
+            <option value="Developer">Developer</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="error-msg animate-fade-in">
+        <i class="ri-error-warning-line"></i> {{ error }}
+      </div>
+
+      <div *ngIf="success" class="success-msg animate-fade-in">
+        <i class="ri-checkbox-circle-line"></i> {{ success }}
+      </div>
+
+      <button type="submit" class="btn-premium w-full mt-4" [disabled]="loading">
+        <span *ngIf="!loading">{{ isRegister ? 'Register Now' : 'Sign In' }}</span>
+        <span *ngIf="loading" class="loader-small"></span>
+      </button>
+
+      <div class="auth-footer">
+        <p *ngIf="!isRegister">New here? <a (click)="toggleMode(true)">Get started for free</a></p>
+        <p *ngIf="isRegister">Already have an account? <a (click)="toggleMode(false)">Sign in instead</a></p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<div class="dashboard-container animate-fade-in">
+  <div class="welcome-header">
+    <div class="greet">
+      <h1>Dashboard Overview</h1>
+      <p>Real-time system health and performance monitoring</p>
+    </div>
+    <div class="actions">
+      <button class="btn-cancel mr-2" (click)="fetchStats(); fetchRecentLogs()">
+        <i class="ri-refresh-line"></i> Refresh
+      </button>
+      <button class="btn-premium" routerLink="/testing">
+        <i class="ri-add-line"></i> New Test
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card glass-morphism">
+      <div class="stat-icon info"><i class="ri-exchange-line"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Total Requests</span>
+        <h2 class="stat-value">{{ stats?.total || 0 }}</h2>
+      </div>
+    </div>
+    <div class="stat-card glass-morphism">
+      <div class="stat-icon success"><i class="ri-checkbox-circle-line"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Success Rate</span>
+        <h2 class="stat-value">{{ successRate }}%</h2>
+      </div>
+    </div>
+    <div class="stat-card glass-morphism">
+      <div class="stat-icon danger"><i class="ri-error-warning-line"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Failures</span>
+        <h2 class="stat-value">{{ stats?.failure || 0 }}</h2>
+      </div>
+    </div>
+    <div class="stat-card glass-morphism">
+      <div class="stat-icon warning"><i class="ri-time-line"></i></div>
+      <div class="stat-data">
+        <span class="stat-label">Avg Latency</span>
+        <h2 class="stat-value">{{ stats?.avgResponseTime || 0 }}ms</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="chart-section glass-morphism">
+      <div class="section-header">
+        <h3 class="card-title">Activity Timeline</h3>
+        <span class="badge badge-info">Last 7 Days</span>
+      </div>
+      <div class="placeholder-chart">
+        <!-- In a real app, I'd use Chart.js or ng2-charts here -->
+        <div class="bar-chart">
+          <div *ngFor="let day of stats?.dailyStats" class="bar-group" [style.height.%]="(day.count / maxRequests) * 80 + 20" [attr.title]="day._id">
+            <div class="bar success" [style.height.%]="(day.success / day.count) * 100"></div>
+            <div class="bar failure" [style.height.%]="(day.failure / day.count) * 100"></div>
+            <span class="label">{{ day._id | date:'dd' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="live-feed-section glass-morphism">
+      <div class="section-header">
+        <h3 class="card-title">Live API Stream</h3>
+        <span class="pulse-icon"></span>
+      </div>
+      <div class="feed-list">
+        <div *ngFor="let log of liveLogs" class="feed-item animate-fade-in">
+          <div class="method-tag" [ngClass]="log.method">{{ log.method }}</div>
+          <div class="feed-details">
+            <p class="endpoint">{{ log.endpoint }}</p>
+            <span class="timestamp">{{ log.timestamp | date:'shortTime' }}</span>
+          </div>
+          <div class="status-tag" [class.success]="log.status < 400" [class.error]="log.status >= 400">
+            {{ log.status }}
+          </div>
+        </div>
+        <div *ngIf="liveLogs.length === 0" class="empty-state">
+          No live activity detected. Try a test request.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
